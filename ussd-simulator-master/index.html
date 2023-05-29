@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<title>USSD Simulator</title>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+		<link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
+		<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
+		<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/fast-xml-parser/3.17.1/parser.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/he/1.2.0/he.min.js"></script>
+		<link rel="stylesheet" href="./style.css">
+		<link rel="stylesheet" href="./meta.css">
+		<link rel="stylesheet" href="./switch.css">
+		<link rel="stylesheet" href="./select.css">
+	</head>
+	<body>
+		<div id="outer-container" class="android">
+			<div id="simulator-container">
+				<img src="assets/dumb_phone.png" id="feature-img" class="phone-img" />
+				<img src="assets/pixel3xl.webp" id="android-img" class="phone-img" />
+				<div id="screen">
+					<div id="ussd-box">
+						<div id="menu-text">Dial Short Code</div>
+						<input id="menu-entry" name="menu-entry" autocomplete="off"></input>
+						<p id="inline-error"></p>
+						<div id="buttons">
+							<input class="dialog-btn" id="cancel-btn" name="cancel-btn" type="button" value="Cancel"></input>
+							<input class="dialog-btn" id="ok-btn" name="ok-btn" type="button" value="Send"></input>
+						</div>
+					</div>
+				</div>
+				<div class="keyboard">
+					<div class="keys">
+						<div class="keycolumn">
+							<div class="key"></div>
+							<div class="key" function="ok"></div>
+							<div class="key" key="1"></div>
+							<div class="key" key="4"></div>
+							<div class="key" key="7"></div>
+							<div class="key" key="*"></div>
+						</div>
+						<div class="keycolumn">
+							<div class="key"></div>
+							<div class="key"></div>
+							<div class="key" key="2"></div>
+							<div class="key" key="5"></div>
+							<div class="key" key="8"></div>
+							<div class="key" key="0"></div>
+						</div>
+						<div class="keycolumn">
+							<div class="key" function="backspace"></div>
+							<div class="key" function="cancel"></div>
+							<div class="key" key="3"></div>
+							<div class="key" key="6"></div>
+							<div class="key" key="9"></div>
+							<div class="key" key="#"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div>
+				<div id="page-header">
+					<h1>USSD Simulator</h1>
+					<h6></h6>
+				</div>
+				<div id="meta-controls">
+					<div>
+						<div class="labeled-input select2Dropdown">
+							<label for="phone-type" class="meta label"><h4>Device</h4></label>
+							<select name="phone-type" id="phone-type" class="meta select" 
+								onclick="$('#phone-type-val').val($(this).find('option:selected').text());">
+								<option value="android" selected="selected">Android</option>
+								<option value="feature">Feature Phone</option>
+								<option value="fullscreen">Fullscreen</option>
+								<!-- <option value="kaios">KaiOS</option> -->
+							</select>
+						</div>
+					</div>
+					<div>
+						<h4>Registered user simulation</h4>
+						<label class="switch" for="registered-toggle">
+							<input id="registered-toggle" class="toggle-box" type="checkbox" checked/>
+							<div class="toggle-img-div">
+								<div class="toggle-img round"></div>
+								<p class="info pull-right">* This toggles whether the University fee payment flow recognises the student as registered or not.</p>
+							</div>
+						</label>
+					</div>
+					<div class="toggle">
+						<h4>Collections simulation</h4>
+						<label class="switch" for="collections-toggle">
+							<input id="collections-toggle" class="toggle-box" type="checkbox"/>
+							<div class="toggle-img-div">
+								<div class="toggle-img round"></div>
+								<p class="info pull-right">* This toggle will enable you to run the USSD push merchant flow simulation.</p>
+							</div>
+							<div class="toggle-content">
+								<div class="labeled-input">
+									<label for="merchant-id" class="meta label">Merchant ID</label>
+									<input name="merchant-id" id="merchant-id" class="meta input">
+								</div>
+								<div class="labeled-input">
+									<label for="amount" class="meta label">Amount</label>
+									<input name="amount" id="amount" type="number" min="0" class="meta input">
+								</div>
+								<p id="collections-error"></p>
+								<input id="collections-sim-btn" name="collections-sim-btn" type="button" value="Simulate USSD push"  class="meta button"></input>
+							</div>
+						</label>
+					</div>
+					<div class="toggle">
+						<h4>Dynamic Journey Simulation</h4>
+						<div>
+							<p class="info">* Upload your dynamic journey .xml file and click on "Simulate Dynamic Journey" to run the simulation.</p>
+							<input type="file" id="dynamic-journey-file" name="dynamic-journey-file" accept=".xml">
+							<input id="dynamic-journey-sim-btn" name="dynamic-journey-sim-btn" type="button" value="Simulate Dynamic Journey"  class="meta button"></input>
+							
+						</div>
+					</div>
+				</div>
+				<button id="close-btn" class="fullscreen-btn"><img src="assets/close.svg" id="close-img" /></button>
+			</div>
+			<div class="instructions-container">
+				<p>Hey there!</p>
+				<p>Welcome to the MTN MoMo USSD Journey simulator. This tool allows developers to simulate various USSD shortcode journeys and is modelled on MTN Uganda's actual MoMo flow.</p>
+				<p>Last updated: December 2020.</p>
+				<p>Currently, the simulator supports 4 different flows.</p>
+				<ol>
+					<li>
+						<p><b>Standard MTN MoMo Uganda Flow</b> - this is a simulation of the current MTN MoMo Uganda interface, available by dialling *165# in the simulator interface.</p>
+					</li>
+					<li>
+						<p><b>University Payment C2B Flow</b> - this is a simulation of a university payment C2B flow that is available by dialling *165# --> 4 --> 3 --> 1 --> Enter any university ID --> 1 --> Enter student ID --> Enter amount --> Confirm. The <b>Registered user simulation</b> toggle will control whether or not the simulator recognises the university ID as a registered student or not.</p>
+					</li>
+					<li>
+						<p><b>Merchant Initiated C2B Checkout Flow</b> - this is a simulation of a merchant-initiated C2B checkout request to the user. The <b>Collections simulation toggle</b> will display input fields for you to enter the merchant ID and amount, and the <b>Simulate USSD push button</b> will invoke the checkout request on the simulator.</p>
+					</li>
+					<li>
+						<p><b>Channel-as-a-Service Dynamic Journey Flow</b> - this is a simulation of the CaaS dynamic journey flow. To use this, please select a an XML file that complies with the dynamic journey schema and then click the <b>Simulate Dynamic Journey</b> button to run the simulation based on the content of the file. The simulation will only work if the file complies with the dynamic journey schema as defined here.</p>
+					</li>
+				</ol>
+			</div>
+		</div>
+	</body>
+	<footer>
+		<script src="./djs.js"></script>
+		<script src="./script.js"></script>
+	</footer>
+</html>
