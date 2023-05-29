@@ -1,0 +1,85 @@
+{
+  "kind": "collectionType",
+  "collectionName": "tontines",
+  "info": {
+    "singularName": "tontine",
+    "pluralName": "tontines",
+    "displayName": "tontine",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "cotisation": {
+      "type": "integer",
+      "required": true
+    },
+    "periodicite": {
+      "type": "string",
+      "required": true
+    },
+    "nb_people": {
+      "type": "integer",
+      "required": true
+    },
+    "date_debut": {
+      "type": "datetime",
+      "required": true
+    },
+    "date_fin": {
+      "type": "datetime",
+      "required": true
+    },
+    "owner": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "plugin::users-permissions.user"
+    },
+    "members": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "plugin::users-permissions.user"
+    },
+    "location": {
+      "type": "string"
+    },
+    "nextDueDate": {
+      "type": "datetime"
+    },
+    "lastDueDate": {
+      "type": "datetime"
+    },
+    "statusBg": {
+      "type": "string"
+    },
+    "image": {
+      "type": "media",
+      "multiple": true,
+      "required": false,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
+    },
+    "status": {
+      "type": "string"
+    },
+    "amount_collect": {
+      "type": "integer"
+    },
+    "access_code": {
+      "type": "string"
+    },
+    "logistic_fees": {
+      "type": "integer"
+    }
+  }
+}
