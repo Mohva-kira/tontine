@@ -1,0 +1,86 @@
+ version: "3.7"
+ services:
+  app:
+    image: node:18-alpine
+    command: sh -c "npm install && npm start"
+    ports:
+      -  '3000:3000'
+    working_dir: /app
+    volumes: 
+      - ./tontine-app:/app
+    environment:
+       MYSQL_HOST: strapi
+       MYSQL_USER: root
+       MYSQL_PASSWORD: 
+       MYSQL_DB: dbTontine
+       WATCHPACK_POLLING: true
+
+  dashboard:
+    image: node:18-alpine
+    command: sh -c "npm install && npm start"
+    ports:
+      -  '3001:3001'
+    working_dir: /dashboard
+    volumes: 
+      - ./dashboard:/dashboard
+    environment:
+       MYSQL_HOST: strapi
+       MYSQL_USER: root
+       MYSQL_PASSWORD: 
+       MYSQL_DB: dbTontine
+       WATCHPACK_POLLING: true
+  server:
+    container_name: strapiTontine
+    build: ./server/
+    image: strapi:latest
+    restart: unless-stopped
+    env_file: ./server/.env
+   
+    volumes:
+      - ./server/config:/opt/app/config
+      - ./server/src:/opt/app/src
+      - ./server/.env:/opt/app/.env
+      - ./server/public/uploads:/opt/app/public/uploads
+    ports:
+      - '1337:1337'
+    networks:
+      - strapi
+    depends_on:
+      - tontineDB
+
+  tontineDB:
+    container_name: tontineDB
+    restart: unless-stopped
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: 
+      MYSQL_DATABASE: dbTontine
+      MYSQL_USER: ROOT
+      MYSQL_ALLOW_EMPTY_PASSWORD: ROOT
+    volumes:
+      - strapi-data:/var/lib/mysql
+      # if you want to use a bind folder
+    ports:
+      - '9306:3306'
+    networks:
+      - strapi
+   
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    ports:
+        - '8060:80'
+    restart: always
+    environment:
+        PMA_HOST: tontineDB
+    depends_on:
+        - tontineDB
+    
+
+ 
+ volumes:
+    strapi-data:
+ networks:
+    strapi:
+      name: Strapi
+      driver: bridge
