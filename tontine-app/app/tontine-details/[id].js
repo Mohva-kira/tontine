@@ -22,7 +22,7 @@ import {
 import { COLORS, icons, SIZES } from "../../constants";
 import { useGetJobByNameQuery } from "../../reducers/api/jobApi";
 import { store } from "../store";
-import { Provider } from "react-redux";
+import { Provider, useSelector } from "react-redux";
 import { useGetTontineDetailsQuery } from "../../reducers/api/tontineApi";
 import { useAddHandsMutation } from "../../reducers/api/handsApi";
 import { useUpdateTontineMutation } from "../../reducers/api/tontineApi";
@@ -32,7 +32,7 @@ import ToastManager, { Toast } from 'toastify-react-native'
 
 
 
-const tabs = ["Apropos", "Qualifications", "Responsibilities"];
+const tabs = ["Apropos", "Qualifications", ];
 
 const JobDetailsWrapper = () => {
   return (
@@ -46,6 +46,8 @@ const JobDetails = () => {
   const params = useSearchParams();
   const router = useRouter();
   const { data, isLoading, error, isFetching, isSuccess, refetch } = useGetTontineDetailsQuery(params?.id)
+
+  const profile = useSelector(state => state.profiles)
 
   const [addHands] = useAddHandsMutation()
   const [updateTontine] = useUpdateTontineMutation()
@@ -190,7 +192,7 @@ const JobDetails = () => {
         return (
           <Specifics
             title="Qualifications"
-            points={data.data[1]?.highlights?.Qualifications ?? ["N/A"]}
+            points={profile.profiles[0] ?? ["N/A"]}
           />
         );
       case "Apropos":

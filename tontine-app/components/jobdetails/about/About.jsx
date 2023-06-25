@@ -10,11 +10,11 @@ const About = ({ info }) => {
 
       <View style={styles.container}>
 
-        <Text style={styles.contextText}>Montant à collecter : {info.amount_collect.toLocaleString('fr') + ' Fcfa'}</Text>
-        <Text style={styles.contextText}>Emplacement : {info.location}</Text>
-        <Text style={styles.contextText}>Nombre maximum de participants : {info.nb_people}</Text>
-        <Text style={styles.contextText}>Périodicité : {info.periodicite}</Text>
-        <Text style={styles.contextText}>Prochaine echéance : { new Date(info.nextDueDate).toLocaleDateString('fr')}</Text>
+        <Text style={styles.contextText}>Montant à collecter : {info?.amount_collect?.toLocaleString('fr') + ' Fcfa'}</Text>
+        <Text style={styles.contextText}>Emplacement : {info?.location}</Text>
+        <Text style={styles.contextText}>Nombre maximum de participants : {info?.nb_people}</Text>
+        <Text style={styles.contextText}>Périodicité : {info?.periodicite}</Text>
+        <Text style={styles.contextText}>Prochaine echéance : { new Date(info?.nextDueDate).toLocaleDateString('fr')}</Text>
       </View>
     </View>
   )

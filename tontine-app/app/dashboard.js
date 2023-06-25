@@ -1,4 +1,4 @@
-import { View, ScrollView, SafeAreaView } from "react-native";
+import { View, ScrollView, SafeAreaView, ActivityIndicator } from "react-native";
 import { useState, useEffect } from "react";
 import { Stack, useRootNavigation, useRouter } from "expo-router";
 import Sidebar from "../components/sidebar/Sidebar";
@@ -14,17 +14,20 @@ import {
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { store } from "./store";
-import { Provider } from "react-redux";
-import {ProtectedRoute} from "../components";
+import { Provider, useSelector } from "react-redux";
+import { ProtectedRoute } from "../components";
 import { useGetProfilesQuery } from "../reducers/api/profileApi";
+import { useGetSingleProfileQuery } from "../reducers/api/profileApi";
 import { useRootNavigationState } from "expo-router";
+import { useIsFocused } from '@react-navigation/native';
+
 
 
 const Dashboard = () => {
-  
+
   return (
-    <Provider store={store}> 
-      <DashboardWrapper /> 
+    <Provider store={store}>
+      <DashboardWrapper />
     </Provider>
   )
 }
@@ -38,58 +41,68 @@ const DashboardWrapper = (props) => {
   const [profileIsOpen, setProfileIsOpen] = useState(false)
   const [currentUser, setCurrentUser] = useState(null)
   const [profile, setProfile] = useState(null)
+  const isFocused = useIsFocused();
+  const user = useSelector((state)  => state.user)
+  const { data: profiles, isLoading, isSuccess, isError, isFetching, refetch } = useGetProfilesQuery(user?.user?.user.id || currentUser?.user.id, { refetchOnMountOrArgChange: true })
 
-  const {data: profiles, isLoading, isSuccess, isError, isFetching} = useGetProfilesQuery()
 
-
+ 
   const getData = async () => {
     try {
       const jsonValue = await AsyncStorage.getItem('@user')
-      if (jsonValue){
+      console.log('getData', jsonValue)
+      if (jsonValue) {
         setCurrentUser(JSON.parse(jsonValue))
       }
-    } catch(e) {
+      return jsonValue
+    } catch (e) {
       // error reading value
 
       console.log('error', e)
     }
   }
 
+  const checkProfile =  () => {
   
-  
-  
-   useEffect(()=> {
-    getData()
-   }, [])
-
-   const checkProfile = async () => {
-
-    try {
-      let myProfile = profiles?.data.find(pr => pr?.attributes?.user?.data?.id === currentUser?.user?.id)
-    console.log('my profile', myProfile)
-
-    if(!myProfile)  router.push("addProfile")
-
-    setProfile(myProfile)
-
-    } catch (error) {
-      console.log('error', error)
-    }
-    
-
-
-   }
+     getData()
    
-   useEffect(()=> {
+      if( !user && !currentUser  &&  profiles?.data.length === 0){
+          console.log('le profile', profiles)
+        router.push("/addProfile") 
 
-    checkProfile()
-   }, [])
+    }
+  
+  }
+
+  isLoading && <ActivityIndicator />
+
+  //  if (isFocused) {
+  //   refetch()
+  //  }
+
+
+  useEffect(() => {
+    
+    checkProfile()   
+  
+  }, [profiles])
+
+  useEffect(() => { 
+
+    getData()
+    refetch()
+    // setTimeout(() => checkProfile(), 3000)
+       
+ 
+
+  }, [isFocused, isSuccess])
+
 
   return (
- 
-    <ProtectedRoute> 
-        {console.log('yo profiles',profile ) }
-   
+
+    <ProtectedRoute>
+      {console.log('yo profiles', profiles)}
+
       <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.lightWhite }}>
         <Stack.Screen
           options={{
@@ -99,26 +112,33 @@ const DashboardWrapper = (props) => {
               <ScreenHeaderBtn
                 iconUrl={icons.menu}
                 dimension="60%"
-                handlePress={() => {setIsOpen(true), setProfileIsOpen(false) } }
+                handlePress={() => { setIsOpen(true), setProfileIsOpen(false)}}
               />
             ),
             headerRight: () => (
-              <ScreenHeaderBtn 
-               iconUrl={images.profile}
-               dimension="60%" 
-               handlePress={() => {setIsOpen(false), setProfileIsOpen(true) } }
-               />
+              <View style={{ flexDirection: "row", justifyContent: "space-between", gap: 10}}>
+              <ScreenHeaderBtn
+                iconUrl={images.notif}
+                dimension="60%"
+                handlePress={() => { setIsOpen(false), setProfileIsOpen(false) , router.push('/notifications') }}
+              />
+               <ScreenHeaderBtn
+                iconUrl={images.profile}
+                dimension="60%"
+                handlePress={() => { setIsOpen(false), setProfileIsOpen(true) }}
+              />
+              </View>
             ),
 
             headerTitle: "",
           }}
         />
-          {console.log('current user', currentUser)}
-          <Sidebar isOpen={isOpen} setIsOpen={setIsOpen} />
-          <SidebarProfile isOpen={profileIsOpen} setIsOpen={setProfileIsOpen} />
+        {console.log('current user', currentUser)}
+        <Sidebar isOpen={isOpen} setIsOpen={setIsOpen} />
+        <SidebarProfile profile={profiles?.data[0]} setProfile={setProfile} setCurrentUser={setCurrentUser} isOpen={profileIsOpen} setIsOpen={setProfileIsOpen} />
 
         <ScrollView showVerticalScrollIndicator={false}>
-        
+
           <View
             style={{
               flex: 1,
@@ -136,14 +156,14 @@ const DashboardWrapper = (props) => {
               }}             
              /> */}
 
-            <WelcomeCard profile={profile} />
+            <WelcomeCard profile={profiles?.data[0]} />
 
-            <PopularTontines />
-            <Nearbyjobs />
+            <PopularTontines currentUser={user?.user || currentUser} />
+            <Nearbyjobs currentUser={user?.user || currentUser} />
           </View>
         </ScrollView>
       </SafeAreaView>
-   
+
     </ProtectedRoute>
   );
 };

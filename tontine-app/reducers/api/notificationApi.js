@@ -4,8 +4,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createSlice } from "@reduxjs/toolkit";
 
 // Define a service using a base URL and expected endpoints
-export const tontineApi = createApi({
-  reducerPath: 'tontineApi',
+export const notificationApi = createApi({
+  reducerPath: 'notificationApi',
   baseQuery: fetchBaseQuery({ baseUrl: 'http://152.228.174.182:1337/api',
   prepareHeaders: async (headers) => {
     const user = JSON.parse (await AsyncStorage.getItem('@user'))
@@ -21,12 +21,12 @@ credentials: 'include',
 
 }),
   endpoints: (builder) => ({
-    getTontine: builder.query({
-      query: (data) => {
+    getNotifications: builder.query({
+      query: (id) => {
         
        
         return {
-            url:`/tontines?populate=*`,
+            url:`/notifications?filters[to][id]=${id}&populate=*`,
            
         }
         },
@@ -34,24 +34,24 @@ credentials: 'include',
       
     }),
 
-    getTontineDetails : builder.query({
+    getNotificationDetails : builder.query({
         query: id => ({
-          url: `/tontines/${id}?populate=*`,
+          url: `/notifications/${id}?populate=*`,
          
         })
     }),
-    addTontine: builder.mutation({
+    addNotification: builder.mutation({
       query: (data) => ({
-        url: '/tontines',
+        url: '/notifications',
         method: 'POST',
        
         body: JSON.stringify(data) ,
       }),
     }),
 
-    updateTontine: builder.mutation({
+    updateNotification: builder.mutation({
       query: (data) => ({
-        url: `/tontines/${data?.data.id}`,
+        url: `/notifications/${data?.data.id}`,
         method: 'PUT',
         
         body: JSON.stringify(data) ,
@@ -64,24 +64,24 @@ credentials: 'include',
 
 // Export hooks for usage in functional components, which are
 // auto-generated based on the defined endpoints
-export const { useGetTontineQuery, useAddTontineMutation, useGetTontineDetailsQuery, useUpdateTontineMutation } = tontineApi
+export const { useGetNotificationsQuery, useAddNotificationMutation, useGetNotificationDetailsQuery, useUpdateNotificationMutation } = notificationApi
 
 
 
 const initialState = {
-  tontines : undefined,
+  notifications : undefined,
 }
 
-export const tontineSlice = createSlice({
-  name: 'Tontines',
+export const notificationSlice = createSlice({
+  name: 'Notifications',
   initialState,
   reducers: {},
   extraReducers: (builder) =>  {
-      builder.addMatcher(tontineApi.endpoints.getTontine.matchFulfilled, (state, action)=> {
+      builder.addMatcher(notificationApi.endpoints.getNotifications.matchFulfilled, (state, action)=> {
       
-          state.tontines = action.payload.data
+          state.notifications = action.payload.data
       })
   }
 })
 
-export default tontineSlice.reducer
+export default notificationSlice.reducer

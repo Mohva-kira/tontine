@@ -28,8 +28,13 @@ const invite = () => {
       const result = await Share.share({
         message:
           `Vous êtes invté à participer à la tontine ${currentTontine?.data?.name}. Le code d'invitation est: ${currentTontine?.data?.access_code}`,
-      });
-      if (result.action === Share.sharedAction) {
+      }).then((res) => {
+
+        router.push('/dashboard')
+      })
+
+      console.log('le resultat', result)
+      if (result === Share.sharedAction) {
         if (result.activityType) {
           // shared with activity type of result.activityType
           console.log('result', result)
@@ -37,7 +42,7 @@ const invite = () => {
         } else {
           // shared
         }
-      } else if (result.action === Share.dismissedAction) {
+      } else if (result === Share.dismissedAction) {
         // dismissed
       }
     } catch (error) {

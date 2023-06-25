@@ -6,7 +6,7 @@ import { AntDesign } from "@expo/vector-icons";
 import Collapsible from "react-native-collapsible";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const SidebarProfile = ({ isOpen, setIsOpen }) => {
+const SidebarProfile = ({ isOpen, setIsOpen, profile, setCurrentUser, setProfile }) => {
   const router = useRouter();
   const [isCollapsed, setIsCollapsed] = useState(true);
 
@@ -15,10 +15,29 @@ const SidebarProfile = ({ isOpen, setIsOpen }) => {
     router.push(`/${screenName}`);
   };
 
-  const logOut = () => {
-    setIsOpen(false);
-    AsyncStorage.removeItem('@user')
-    router.push('/login')
+  const logOut = async () => {
+   
+     
+      try {
+          await AsyncStorage.removeItem('@user')
+          .then(() =>
+          {
+            setCurrentUser(null)
+            setProfile(null)
+            setIsOpen(false);
+            router.push('/login')
+          }
+          ).catch(err => {
+            console.log(err);
+          });
+        
+          return true;
+      }
+      catch(exception) {
+          return false;
+      }
+  
+
 
   }
 
@@ -37,7 +56,7 @@ const SidebarProfile = ({ isOpen, setIsOpen }) => {
       </TouchableOpacity>
       <TouchableOpacity
         style={styles.button}
-        onPress={() => handleNavigate("/profile/1")}
+        onPress={() => handleNavigate(`/profile/${profile.id}`)}
       >
         <Text style={styles.buttonText}>Profile</Text>
       </TouchableOpacity>
@@ -70,13 +89,13 @@ const SidebarProfile = ({ isOpen, setIsOpen }) => {
           <Text style={styles.collapseButtonText}>Mes tontines</Text>
         </TouchableOpacity>
       </Collapsible> */}
-
+{/* 
       <TouchableOpacity
         style={styles.button}
         onPress={() =>  handleNavigate("transactionsList")}
       >
         <Text style={styles.buttonText}>Mes Transactions</Text>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
     </View>
   );
 };

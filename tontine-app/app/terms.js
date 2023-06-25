@@ -67,7 +67,7 @@ const Terms = () => {
             </TouchableOpacity>
 
             <View style={{display: 'flex', flexDirection: 'row', justifyContent: "center"}}>
-                <Text style={{fontSize: 16, fontWeight: "bold"}}>En terminant, vous confirmez être d'accord avec nos termes de contrat et notre politique de fonctionnement</Text>
+                <Text style={{fontSize: 16, fontWeight: "bold", width: '70%'}}>En terminant, vous confirmez être d'accord avec nos termes de contrat et notre politique de fonctionnement</Text>
 
                 {/* <TouchableOpacity onPress={() => router.push("/login")}>
                   <Text style={{color: COLORS.primary, fontWeight: 'bold', fontSize: 16}} > Connexion </Text>

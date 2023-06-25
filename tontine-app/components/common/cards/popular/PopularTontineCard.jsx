@@ -5,17 +5,17 @@ import styles from "./populartontinecard.style";
 
 import { checkImageURL } from "../../../../util";
 
-const PopularTontineCard = ({ item, selectedTontine, handleCardPress, payments }) => {
+const PopularTontineCard = ({ item, selectedTontine, handleCardPress, payments, currentUser }) => {
 
 
 
-  const tontinePayments = payments?.filter(pay => item.id === pay.attributes.tontine.data.id )
+  const tontinePayments = payments?.filter(pay => item.id === pay.attributes.tontine.data.id &&  pay.attributes.user.data.id === currentUser?.user.id) 
 
 
   const calculatePaymentDone = () => {
     let result = 0
     
-
+    console.log('tontine pay', tontinePayments )
     for (i=0; i <= tontinePayments?.length; i++) {
       if(tontinePayments[i]?.attributes?.amount) 
           result = result + parseInt(tontinePayments[i]?.attributes?.amount)
@@ -23,7 +23,7 @@ const PopularTontineCard = ({ item, selectedTontine, handleCardPress, payments }
       
 
         }
-  console.log('montant payer', result)
+ 
   return  result  
 }
 
@@ -49,6 +49,8 @@ return item?.attributes?.amount_collect - result
       style={styles.container(selectedTontine, item)}
       onPress={() => handleCardPress(item)}
       >
+        {console.log('tontine Payment', tontinePayments)}
+        {console.log('user', currentUser)}
       <TouchableOpacity style={styles.logoContainer(selectedTontine, item)}>
         <Image
           source={{

@@ -6,10 +6,12 @@ import { icons } from "../../../constants";
 import Popup from "../../popup/Popup";
 import Field from "../../field/Field";
 import ToastManager, { Toast } from "toastify-react-native";
+import {useAddNotificationMutation } from "../../../reducers/api/notificationApi";
 
 const Footer = ({ tontine, updateFunction, handsFunction, user, refetch, members }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [bras, setBras] = useState("1");
+  const [addNotif] = useAddNotificationMutation()
 
   const [message, setMessage] = useState(null);
   const toggleModal = () => {
@@ -29,6 +31,8 @@ const Footer = ({ tontine, updateFunction, handsFunction, user, refetch, members
    
 
     const tontineData = { data: { id: tontine?.data.id, members: arr } };
+
+    const notifData = {data : {title: 'Demande de participation', lu : false, from: user?.user.id, to: tontine?.data.attributes.owner.data.id, tontine: tontine?.data.id, description: 'Une nouvelle demande de participation', type: 'Demande' }}
     
       console.log('hands data', handsData)
       console.log('tontine data', tontineData)
@@ -49,6 +53,16 @@ const Footer = ({ tontine, updateFunction, handsFunction, user, refetch, members
         .unwrap()
         .then((data) => console.log("updated data", data))
         .catch((error) => console.log("error", error));
+
+
+        await addNotif(notifData)
+        .unwrap()
+        .then((data) => console.log("notif data", data))
+        .catch((error) => console.log("error", error));
+
+
+
+
     } catch (error) {
       console.log("error", error);
     }

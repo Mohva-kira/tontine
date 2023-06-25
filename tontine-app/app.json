@@ -2,10 +2,24 @@
   "expo": {
     "scheme": "acme",
     "web": {
-      "bundler": "metro"
+      "bundler": "metro",
+      "favicon": "./assets/favicon.png"
     },
-    "name": "tontine-app",
-    "slug": "tontine-app",
+    "name": "Ivoire Tontine",
+    "slug": "Ivoire_Tontine",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.Ivoire_Tontine.com"
+    },
+  
     "plugins": [
       [
         "expo-contacts",
@@ -13,6 +27,18 @@
           "contactsPermission": "Allow $(PRODUCT_NAME) to access your contacts."
         }
       ]
-    ] 
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "8aec860a-91c8-4fdf-8eb4-372a3a2b82a8"
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      },
+      "package": "com.mohva.Ivoire_Tontine"
+    }
   }
 }

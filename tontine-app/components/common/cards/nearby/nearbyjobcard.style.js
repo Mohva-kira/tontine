@@ -11,7 +11,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     padding: SIZES.medium,
     borderRadius: SIZES.small,
-    backgroundColor: transac.attributes.type === "retrait" ? "#90EE90" : "#FFF",
+    backgroundColor: transac?.attributes?.type === "retrait" ? "#90EE90" : "#FFF",
     ...SHADOWS.medium,
     shadowColor: COLORS.white,
   }),

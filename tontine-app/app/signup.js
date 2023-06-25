@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Text, View, ScrollView, TouchableOpacity } from "react-native";
-import { useRouter } from "expo-router";
+import { useRouter, Stack } from "expo-router";
 import { COLORS, icons, images, SIZES } from "../constants";
 import Background from "./Background";
 import { Field } from "../components";
@@ -13,10 +13,19 @@ import * as Yup from 'yup'
 
 const SignupSchema = Yup.object().shape({
   number: Yup.number()
-          .min(8, 'Minimum 10 chiffres')
-          .max(10, 'Maximum 10 chiffres')
+          .min(8, 'Trop court')
+          
           .required('Saisissez votre numéro de téléphone'),
   password: Yup.string()
+          .required('Mot de passe requis')
+          .min(8, 'Le mot de passe doit être 8 charactère au minimum')
+          .matches(/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/, 'Doit être au minimum 8 charactères, au moins un charactère en majuscule, un chiffre au minimum et un charactère spécial'),
+  confirmPassword: Yup.string()
+          .required('La confirmation de mot de passe est obligatoire !!')
+          .oneOf([Yup.ref('password')], 'Votre mot de passe ne correspond pas')
+          .min(8)
+
+          
 })
 
 const Signup = () => {
@@ -38,7 +47,7 @@ const SignupWrapped = () => {
   const [register, { isLoading }] = useRegisterMutation();
   const [pays, setPays] = useState('')
   const [ind, setInd] = useState('')
-
+  const [marginBt, setMarginBt] = useState(10)
   const countries = ["Côte d'Ivoire", "Senegal", "Mali"]
   const sendData = async () => {
     const randomMail = `${username}@gmail.com`
@@ -60,9 +69,11 @@ const SignupWrapped = () => {
     }
   }
 
-    const handleChangeText = (text, func) => {
-      setUsername(text)
-      func
+    const handleChangeText = (event, func) => {
+      const {name, type, text} = event.nativeEvent;
+      console.log('le text', text)
+      func(text)
+      // handleChange('number')
 
     }
 
@@ -70,6 +81,14 @@ const SignupWrapped = () => {
   return (
 
     <Background>
+      <Stack.Screen
+          options={{
+            headerStyle: { backgroundColor: COLORS.lightWhite },
+            headerShadowVisible: false,
+
+            headerTitle: " Inscrption ",
+          }}
+        />
       <ScrollView showVerticalScrollIndicator={false}>
         <Formik initialValues={{
           number: '',
@@ -88,7 +107,7 @@ const SignupWrapped = () => {
           >
             <Text
               style={{
-                color: COLORS.white,
+                color: COLORS.secondary,
                 fontSize: 64,
                 fontWeight: "bold",
                 marginVertical: 10,
@@ -100,12 +119,15 @@ const SignupWrapped = () => {
             <Text style={{ color: 'white', fontSize: 19, fontWeight: 'bold', marginBottom: 20 }}> Créer un compte </Text>
             <View
               style={{
-                backgroundColor: COLORS.white,
+                backgroundColor: COLORS.lightWhite,
                 height: 700,
                 width: 460,
                 borderTopLeftRadius: 100,
                 paddingTop: 50,
                 alignItems: "center",
+               justifyContent: "center",
+               alignSelf:  'flex-start',
+               paddingBottom: marginBt
               }}
             >
 
@@ -136,13 +158,18 @@ const SignupWrapped = () => {
                 }}
               />
 
-              <Field placeholder="Numero de télephone / Username" onChangeText={ handleChange('number')} value={values.number} />
-               {errors.number && (
-                <Text> {errors.number} </Text>
+              <Field placeholder="Numero de télephone / Username" onFocus={() => setMarginBt(400)} onBlur={() => {setFieldTouched('number'); setMarginBt(0)}} onChange={e => {handleChangeText(e, setUsername)}} onChangeText={ handleChange('number')}  value={values.number} />
+               {touched.number && errors.number && (
+                <Text style={{color: 'red', width: '70%'}}> {errors.number} </Text>
                )}
-              <Field placeholder="Mot de passe" onChangeText={setPassword} secureTextEntry={true} />
-              <Field placeholder="Conifrmer mot de passe" secureTextEntry={true} />
-
+              <Field placeholder="Mot de passe" onFocus={() => setMarginBt(400)} onBlur={() => {setFieldTouched('password'); ; setMarginBt(20)}} autoCapitalize={false} onChange={e => {handleChangeText(e, setPassword)}} onChangeText={handleChange('password')} secureTextEntry={true}  value={values.password}/>
+              { touched.password && errors.password && (
+                <Text style={{color: 'red', width: '70%'}}> {errors.password} </Text>
+               )}
+              <Field placeholder="Conifrmer mot de passe" onFocus={() => setMarginBt(400)} onBlur={() => {setFieldTouched('confirmPassword'); setMarginBt(20)}} autoCapitalize={false} onChange={e => {handleChangeText(e, () => {})}}  onChangeText={handleChange('confirmPassword')} secureTextEntry={true} value={values.confirmPassword} />
+              {touched.confirmPassword && errors.confirmPassword && (
+                <Text style={{color: 'red', width: '70%'}}> {errors.confirmPassword} </Text>
+               )}
               {/* <View
               style={{ alignItems: "flex-end", width: "78%", paddingRight: 16, marginBottom: 200 }}
             >
@@ -157,14 +184,14 @@ const SignupWrapped = () => {
               </Text>
             </View> */}
 
-              <TouchableOpacity style={{ backgroundColor: '#FE7654', borderRadius: 100, alignItems: 'center', width: 250 }} onPress={sendData} >
+              <TouchableOpacity style={{ backgroundColor: isValid ? '#FE7654' : '#fbb3a1', borderRadius: 100, alignItems: 'center', width: 250 }} onPress={sendData} disabled={!isValid} >
                 <Text style={{ color: COLORS.lightWhite, fontSize: 22, fontWeight: 'bold' }}>Suivant</Text>
               </TouchableOpacity>
 
               <View style={{ display: 'flex', flexDirection: 'row', justifyContent: "center" }}>
                 <Text style={{ fontSize: 16, fontWeight: "bold" }}>Vous avez un compte ? </Text>
 
-                <TouchableOpacity onPress={() => router.push('/terms')} >
+                <TouchableOpacity onPress={() => router.push('/login')} >
                   <Text style={{ color: COLORS.primary, fontWeight: 'bold', fontSize: 16 }} > Connexion </Text>
                 </TouchableOpacity>
 

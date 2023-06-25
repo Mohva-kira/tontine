@@ -49,6 +49,14 @@ const Home = () => {
   return (
     <>
       <Background>
+      <Stack.Screen
+          options={{
+            headerStyle: { backgroundColor: COLORS.lightWhite },
+            headerShadowVisible: false,
+
+            headerTitle: " Bienvenue dans Ivoire Tontine ",
+          }}
+        />
         <View
           style={{
             padding: SIZES.medium,

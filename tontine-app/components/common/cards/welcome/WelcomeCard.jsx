@@ -12,7 +12,7 @@ const WelcomeCard = ({ profile }) => {
   return (
     <TouchableOpacity
       style={styles.container}
-      onPress={() => router.push('/profile/1')}
+      onPress={() => router.push(`/profile/${profile.id}`)}
     >
       <TouchableOpacity style={styles.logoContainer}>
         <Image
@@ -26,7 +26,7 @@ const WelcomeCard = ({ profile }) => {
         />
       </TouchableOpacity>
       <Text style={styles.companyName} numberOfLines={1}>
-        {profile?.attributes.nom + " " + profile?.attributes.prenom } 
+        {profile?.attributes?.nom + " " + profile?.attributes.prenom } 
       
       </Text>
 

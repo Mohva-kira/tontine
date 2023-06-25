@@ -11,15 +11,25 @@ const Specifics = ({ title, points }) => {
       <Text style={styles.title}>{title}</Text>
 
       <View style={styles.pointsContainer}>
-        {
-          points.map((item, index) => (
-            <View style={styles.pointWrapper} key={item + index}>
+        
+            <View style={styles.pointWrapper} >
               <View style={styles.pointDot} />
-              <Text style={styles.pointText}>{item}</Text>
-            </View>)
-          ) 
+              <Text style={styles.pointText}>{points.attributes?.email}</Text>
+             
+            </View>
           
-          }
+           <View style={styles.pointWrapper} >
+              <View style={styles.pointDot} />
+              <Text style={styles.pointText}>Date de naissance : { new Date(points.attributes?.date_naissance).toLocaleDateString('fr') }</Text>
+              
+              
+            </View>
+            <View style={styles.pointWrapper} >
+              <View style={styles.pointDot} />
+              <Text style={styles.pointText}>{points.attributes?.pays}</Text>
+              <Text style={styles.pointText}>{points.attributes?.ville}</Text>
+            </View>
+          
         </View>
     </View>
   );

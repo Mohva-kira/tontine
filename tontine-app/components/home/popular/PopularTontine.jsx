@@ -12,31 +12,30 @@ import styles from "./populartontine.style";
 import { COLORS, SIZES } from "../../../constants";
 import PopularTontineCard from "../../common/cards/popular/PopularTontineCard";
 
-import useFetch from "../../../hook/useFetch";
+import { useIsFocused } from "@react-navigation/native";
 // import { useGetTontineByNameQuery } from "../../../reducers/api/TontineApi";
 import { useSelector } from "react-redux";
 import { useGetTontineQuery } from "../../../reducers/api/tontineApi";
 import { useGetPaymentQuery } from "../../../reducers/api/paymentApi";
 
-
-const PopularTontines = () => {
+const PopularTontines = ({currentUser}) => {
   const router = useRouter();
+  const isFocused = useIsFocused()
   const [selectedTontine, setSelectedTontine] = useState();
-  const stateData = useSelector(state=> state.Tontines)
-  const {data, isLoading, isFetching, isError} = useGetTontineQuery()
-  const {data: paymentData, } = useGetPaymentQuery()
+  const stateData = useSelector((state) => state.Tontines);
+  const { data, isLoading, refetch: refetchTontine, isFetching, isError } = useGetTontineQuery({}, { refetchOnMountOrArgChange: true });
+  const { data: paymentData, refetch } = useGetPaymentQuery({}, { refetchOnMountOrArgChange: true });
   // const { data, isLoading, error, refetch } = useGetTontineByNameQuery({search: "search", query: {
   //   query: "React developer",
   //   num_pages: 1,
   // }});
-
 
   // const isLoading = false;
   // const error = null;
 
   // const accountData = {
   //   "data" : [
-  //     {   
+  //     {
   //         "id" : "41254454",
   //         "title": "Compte Courant",
   //         "solde": "259400",
@@ -72,35 +71,51 @@ const PopularTontines = () => {
     router.push(`/tontine-details/${item.id}`);
     setSelectedTontine(item.id);
   };
-  
-  
+
+  useEffect(() => {
+    refetch()
+    refetchTontine()
+   
+  }, [isFocused, paymentData])
 
   return (
     <View style={styles.container}>
-      {console.log('payment',JSON.stringify(paymentData))}
+      {console.log("payment data", data)}
       <View style={styles.header}>
         <Text style={styles.headerTitle}>Mon compte</Text>
-        <TouchableOpacity onPress={() => router.push('/accountList')}>
+        <TouchableOpacity onPress={() => router.push("/accountList")}>
           <Text style={styles.headerBtn}>Plus</Text>
         </TouchableOpacity>
       </View>
       <View style={styles.cardsContainer}>
-        {isLoading?(
+        {isLoading ? (
           <ActivityIndicator size="large" colors={COLORS.primary} />
-            ): isError ? (
-              <Text>  Something went wrong </Text>
-            ) :(
-              <FlatList
-                data = {data?.data}
-                renderItem={({item}) => (
-                  <PopularTontineCard selectedTontine={selectedTontine} item={item} handleCardPress={handleCardPress} payments={paymentData?.data} />
-                )}
-                keyExtractor={item => item.id}
-                contentContainerStyle={{columnGap: SIZES.medium}}
-                horizontal
-               />
-            )
-        }
+        ) : isError ? (
+          <Text> Erreur lors du traitement des données </Text>
+        ) : data?.data.length === 0 ? (
+          <>
+            <Text> Vous n'êtes inscrit à aucune tontine</Text>
+            <TouchableOpacity onPress={() => router.push("/accountList")}>
+              <Text style={styles.headerBtn}> Voir les Tontines</Text>
+            </TouchableOpacity>
+          </>
+        ) : (
+          <FlatList
+            data={data?.data}
+            renderItem={({ item }) => (
+              <PopularTontineCard
+                selectedTontine={selectedTontine}
+                item={item}
+                handleCardPress={handleCardPress}
+                payments={paymentData?.data}
+                currentUser={currentUser}
+              />
+            )}
+            keyExtractor={(item) => item.id}
+            contentContainerStyle={{ columnGap: SIZES.medium }}
+            horizontal
+          />
+        )}
       </View>
     </View>
   );

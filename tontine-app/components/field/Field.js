@@ -1,8 +1,10 @@
 import { TextInput } from "react-native";
-import React from "react";
+import React, { useState } from "react";
 import { COLORS } from "../../constants";
 
 const Field = (props) => {
+
+  
   return (
     <TextInput
       {...props}
@@ -14,10 +16,11 @@ const Field = (props) => {
         height: 60,
         backgroundColor: 'rgb(220, 220, 220)',
         marginVertical: 10,
-      
+        
         
       }}
       placeholderTextColor={COLORS.primary}
+      
     ></TextInput>
   );
 };
