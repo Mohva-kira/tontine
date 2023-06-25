@@ -65,13 +65,15 @@ const DashboardWrapper = (props) => {
   const checkProfile =  () => {
   
      getData()
-   
-      if( !user && !currentUser  &&  profiles?.data.length === 0){
+    console.log('check le profile', currentUser)
+
+    if(currentUser != null){
+      if( profiles?.data.length === 0){
           console.log('le profile', profiles)
         router.push("/addProfile") 
 
     }
-  
+  }
   }
 
   isLoading && <ActivityIndicator />
@@ -92,6 +94,7 @@ const DashboardWrapper = (props) => {
     getData()
     refetch()
     // setTimeout(() => checkProfile(), 3000)
+ 
        
  
 

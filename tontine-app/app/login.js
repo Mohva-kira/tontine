@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Text, View, ScrollView, TouchableOpacity } from "react-native";
+import { Text, View, ScrollView, TouchableOpacity, TextInput, Alert } from "react-native";
 import { useRouter } from "expo-router";
 import { COLORS, icons, images, SIZES } from "../constants";
 import Background from "./Background";
@@ -9,6 +9,7 @@ import { Provider } from "react-redux";
 import { store } from "./store";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { SafeAreaView } from "react-native";
+import { Ionicons } from '@expo/vector-icons';
 
 const Login = () => {
 
@@ -25,7 +26,7 @@ const LoginWappred = () => {
   const [password, setPasssword] = useState('')
   const [login, isLoading] = useLoginMutation()
   const [marginBt, setMarginBt] = useState(0)
-
+  const [passwordVisible, setPasswordVisible] = useState(true)
   const storeData = (value) => {
     try {
       const jsonValue = JSON.stringify(value)
@@ -44,11 +45,20 @@ const LoginWappred = () => {
 
       await login({ identifier: username, password })
         .unwrap()
-        .then(data => { console.log('connected', data); AsyncStorage.setItem('@user', JSON.stringify(data)); router.push('/dashboard'); })
+        .then(data => { console.log('connected', data); AsyncStorage.setItem('@user', JSON.stringify(data)); router.push('/dashboard');  
+        Alert.alert('Erreur', 'Numéro de telephone ou mot de passe incorrect', [
+          {
+            text: 'Annuler',
+            onPress: () => console.log('Cancel Pressed'),
+            style: 'cancel',
+          },
+          {text: 'OK', onPress: () => console.log('OK Pressed')},
+        ]); })
         .catch(error => console.log('rejected', error))
 
 
     } catch (error) {
+      Al
       console.log(error)
     }
   }
@@ -99,7 +109,7 @@ const LoginWappred = () => {
                 {" "}
                 Bienvenue{" "}
               </Text>
-              {console.log('magin', marginBt)}
+              
               <Text
                 style={{
                   color: COLORS.gray,
@@ -111,7 +121,20 @@ const LoginWappred = () => {
                 Connectez vous
               </Text>
               <Field onFocus={() => setMarginBt(400)} onChangeText={setUsername} onBlur={() => { setMarginBt(null) }} placeholder="Nom d'utilisateur / Numero de télephone " />
-              <Field onFocus={() => setMarginBt(400)} onChangeText={setPasssword} onBlur={() => { setMarginBt(null) }} placeholder="Mot de passe" secureTextEntry={true} />
+              <View style={{ width: '130%', alignItems: 'center', flexDirection: 'row', paddingLeft:130}}>
+                <Field onFocus={() => setMarginBt(400)}
+                  onChangeText={setPasssword}
+                  onBlur={() => { setMarginBt(null) }}
+                  placeholder="Mot de passe"
+                  secureTextEntry={passwordVisible}
+                 
+                />
+                <TouchableOpacity style={{position: 'absolute', right: 150 }} onPress={() => setPasswordVisible(!passwordVisible)}>
+                  {passwordVisible ? <Ionicons name="eye" size={24} color="black" /> : <Ionicons name="eye-off" size={24} color="black" />}
+                </TouchableOpacity>
+
+              </View>
+
               <View
                 style={{ alignItems: "flex-end", width: "78%", paddingRight: 16, marginBottom: 50 }}
               >
