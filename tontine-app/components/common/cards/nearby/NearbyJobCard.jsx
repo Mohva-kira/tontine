@@ -56,11 +56,16 @@ const NearbyJobCard = ({ transac, handleNavigate }) => {
       <Collapsible collapsed={isCollapsed}>
         <View>
             <Text>
-              Tontine
+              Transaction effectuée le
             </Text>
-            {/* <Text>
-              {transac?.attributes?.tontine.data}
-            </Text> */}
+
+            <Text>
+            {new Date(transac?.attributes?.createdAt).toLocaleDateString("fr")}{" à "} {new Date(transac?.attributes?.createdAt).getHours()+"h:"+ new Date(transac?.attributes?.createdAt).getMinutes()}
+              
+            </Text>
+            <Text>
+             Via Orange Money
+            </Text>
         </View>
       </Collapsible>
     </>

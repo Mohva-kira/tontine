@@ -21,26 +21,24 @@ const Footer = ({ tontine, updateFunction, handsFunction, user, refetch, members
   const sendData = async () => {
     let arr = members.slice()
     arr.push(user?.user.id)
-    console.log('les members', arr)
+
 
 
     const handsData = {
       data: { tontine: tontine?.data.id, user: user?.user.id, hands: bras },
     };
-    console.log("user", user?.user.id);
+
    
 
     const tontineData = { data: { id: tontine?.data.id, members: arr } };
 
-    const notifData = {data : {title: 'Demande de participation', lu : false, from: user?.user.id, to: tontine?.data.attributes.owner.data.id, tontine: tontine?.data.id, description: 'Une nouvelle demande de participation', type: 'Demande' }}
+    const notifData = {data : {title: 'Demande de participation', lu : false, from: user?.user.id, to: tontine?.data.attributes.owner.data?.id, tontine: tontine?.data.id, description: 'Une nouvelle demande de participation', type: 'Demande' }}
     
-      console.log('hands data', handsData)
-      console.log('tontine data', tontineData)
+
     try {
       await updateFunction(tontineData)
         .unwrap()
         .then((data) => {
-          console.log("updated data", data);
           Toast.success("Vous participation en attente de validation!");
           setTimeout(() => {
             refetch()
@@ -51,13 +49,13 @@ const Footer = ({ tontine, updateFunction, handsFunction, user, refetch, members
 
       await handsFunction(handsData)
         .unwrap()
-        .then((data) => console.log("updated data", data))
+        .then((data) => {})
         .catch((error) => console.log("error", error));
 
 
         await addNotif(notifData)
         .unwrap()
-        .then((data) => console.log("notif data", data))
+        .then((data) => {})
         .catch((error) => console.log("error", error));
 
 
@@ -71,7 +69,7 @@ const Footer = ({ tontine, updateFunction, handsFunction, user, refetch, members
  
   return (
     <View style={styles.container}>
-      {console.log("actual members", members)}
+  
 
       <TouchableOpacity style={styles.likeBtn}>
         <Image

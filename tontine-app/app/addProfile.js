@@ -5,29 +5,29 @@ import {
   ScrollView,
   TouchableOpacity,
   SafeAreaView,
-  Button,
-  Platform,
-  
+
+
 } from "react-native";
 import { useRouter, Stack } from "expo-router";
 import { COLORS, icons, images, SIZES } from "../constants";
-import Background from "./Background";
+
 import { Field } from "../components";
 import RadioGroup, { Radio } from "react-native-radio-input/Components/main";
 import DatePicker from "react-native-datepicker-expo";
-import { useAddProfileMutation } from "../reducers/api/profileApi"; 
+import { useAddProfileMutation } from "../reducers/api/profileApi";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Provider } from "react-redux";
 import { store } from "./store";
 import ToastManager, { Toast } from 'toastify-react-native'
+import SelectDropdown from 'react-native-select-dropdown'
 
 
 
 const addProfile = () => {
-  
+
   return (
-    <Provider store={store}> 
-      <AddProfileWrapper /> 
+    <Provider store={store}>
+      <AddProfileWrapper />
     </Provider>
   )
 }
@@ -38,22 +38,23 @@ const AddProfileWrapper = () => {
   const router = useRouter();
   const [nom, setNom] = useState("");
   const [prenom, setPrenom] = useState("");
-  const [date, setDate] = useState(new Date());
+  const [date, setDate] = useState(new Date('1989-01-01'));
   const [open, setOpen] = useState(false);
-  const [pays, setPays] = useState("");
+  const [pays, setPays] = useState("Côte d'Ivoire");
   const [ville, setVille] = useState('');
   const [email, setEmail] = useState('');
 
-  const [addProfile, {isLoading}] = useAddProfileMutation() 
+  const [addProfile, { isLoading }] = useAddProfileMutation()
   const [currentUser, setCurrentUser] = useState(null)
 
 
+  const countries = ["Côte d'Ivoire", "Senegal", "Mali"]
 
   const storeData = async (value) => {
     try {
       const jsonValue = JSON.stringify(value)
       await AsyncStorage.setItem('@TontineAdded', jsonValue)
-     
+
     } catch (e) {
       // saving error
       console.log('error', e)
@@ -61,26 +62,26 @@ const AddProfileWrapper = () => {
   }
 
 
-  const today = new Date();
+  const today = new Date('01/01/1900');
 
   changeDate = (date) => {
     setDate(date);
-    
+
   };
 
- 
-  
+
+
   const getData = async () => {
     try {
       const jsonValue = await AsyncStorage.getItem('@user')
-      console.log('getData', jsonValue)
+    
       if (jsonValue) {
-        setCurrentUser(JSON.parse(jsonValue)) 
+        setCurrentUser(JSON.parse(jsonValue))
       }
       return jsonValue
     } catch (e) {
       // error reading value
-  
+
       console.log('error', e)
     }
   }
@@ -88,31 +89,48 @@ const AddProfileWrapper = () => {
 
 
   const sendData = async () => {
-   
-    const data = {data: {nom, prenom, pays, ville, date_naissance: date, email, user: currentUser?.user.id} }
-    storeData(data)
 
-    console.log('data to send',data)
-    try {
+    var day = date.getDate();
+    var month =  date.getMonth();
+    var year =  date.getFullYear();
+    var age = 18;
+    var setDate = new Date(year + age, month - 1, day);
+    var currdate = new Date();
+   
+
+    if (currdate >= setDate) {
+      // you are above 18
+    
+      const data = { data: { nom, prenom, pays, ville, date_naissance: date, user: currentUser?.user.id } }
+      storeData(data)
+  
+ 
+      try {
         await addProfile(data)
           .unwrap()
-          .then(data =>{ console.log('added', data);  Toast.success('Profile enregistré!'); setTimeout(() => {  router.push("/dashboard");  }, 3000)  })
+          .then(data => {  Toast.success('Profile enregistré!'); setTimeout(() => { router.push("/dashboard"); }, 3000) })
           .catch(e => console.log('error', e))
-
-          
-          
-    } catch (error) {
-      
+  
+  
+  
+      } catch (error) {
+  
+      }
+    } else {
+       Toast.error('Vous avez moins de 18 ans')
+       Toast.error('Il faut être majeure pour participer au tontine', 'center')
     }
+
+   
   }
 
-  useEffect(()  => {
+  useEffect(() => {
     getData()
 
   }, [])
   return (
     <SafeAreaView style={{ flex: 1 }}>
-       <ToastManager />
+      <ToastManager />
       <Stack.Screen
         options={{
           headerStyle: { backgroundColor: COLORS.lightWhite },
@@ -156,17 +174,32 @@ const AddProfileWrapper = () => {
             <Field
               placeholder="Prenom"
               onChangeText={(text) => setPrenom(text)}
-             
+
             />
-             <Field
-              placeholder="Pays"
-              onChangeText={(text) => setPays(text)}
-             
-            />
-             <Field
+           <SelectDropdown
+                  defaultValueByIndex={0}
+                  data={countries}
+                  onSelect={(selectedItem, index) => {
+               
+                    setPays(selectedItem)
+
+                   
+                  }}
+                  buttonTextAfterSelection={(selectedItem, index) => {
+                    // text represented after item is selected
+                    // if data array is an array of objects then return selectedItem.property to render after item is selected
+                    return selectedItem
+                  }}
+                  rowTextForSelection={(item, index) => {
+                    // text represented for each item in dropdown
+                    // if data array is an array of objects then return item.property to represent item in dropdown
+                    return item
+                  }}
+                />
+            <Field
               placeholder="Ville"
               onChangeText={(text) => setVille(text)}
-             
+
             />
 
             <Text style={{ paddingBottom: 10 }}> Date de naissance </Text>
@@ -193,14 +226,11 @@ const AddProfileWrapper = () => {
               }}
               onDateChange={(date) => changeDate(date)}
             />
-           
 
-            <Field
-              placeholder="Email"
-              onChangeText={(text) => setEmail(text)}
-            />
-          
+
          
+
+
 
             <TouchableOpacity
               style={{

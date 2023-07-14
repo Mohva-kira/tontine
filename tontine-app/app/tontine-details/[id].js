@@ -165,7 +165,7 @@ const JobDetails = () => {
   const getData = async () => {
     try {
       const jsonValue = await AsyncStorage.getItem('@user')
-      console.log('getData', jsonValue)
+     
       if (jsonValue) {
         setCurrentUser(JSON.parse(jsonValue))
       }
@@ -211,22 +211,22 @@ const JobDetails = () => {
     }
   };
   const checkDueDate = async () => {
-    console.log('data data', nextDueDate)
+  
     if (new Date(data?.data.attributes.nextDueDate) < today) {
 
       const lastDueDate = nextDueDate
       const dataToSend = { data: { id: data?.data.id, lastDueDate : new Date(lastDueDate), nextDueDate: nextDueDate ? data?.data.attributes.periodicite === 'Hebdomadaire' ? nextDueDate.setDate(nextDueDate.getDate() + 7) : nextDueDate.setMonth(nextDueDate.getMonth() + 1) : new Date(data.data.attributes.date_debut) } }
       await updateTontine(dataToSend)
         .unwrap()
-        .then(() => console.log('tontine echanche mise a jour'))
+        .then(() => { Toast.success(`Echéance, mise à jour. Prochaine echeance: ${nextDueDate.toLocaleDateString('fr')}`)})
         .catch((e) => console.log('error', e))
-      alert('date depasser')
-      console.log('data', dataToSend)
+
+      
     }
   }
 
   useEffect(() => {
-    console.log('due date', data?.data.attributes.nextDueDate)
+  
 
 
     getData()

@@ -29,7 +29,7 @@ import axios from 'axios'
         } catch(error) {
             setError(error)
              console.log(error)
-            alert('There is an error')
+           
 
         } finally {
             setIsLoading(false)

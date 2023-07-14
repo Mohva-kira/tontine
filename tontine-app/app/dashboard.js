@@ -50,7 +50,7 @@ const DashboardWrapper = (props) => {
   const getData = async () => {
     try {
       const jsonValue = await AsyncStorage.getItem('@user')
-      console.log('getData', jsonValue)
+      
       if (jsonValue) {
         setCurrentUser(JSON.parse(jsonValue))
       }
@@ -65,11 +65,11 @@ const DashboardWrapper = (props) => {
   const checkProfile =  () => {
   
      getData()
-    console.log('check le profile', currentUser)
+
 
     if(currentUser != null){
       if( profiles?.data.length === 0){
-          console.log('le profile', profiles)
+  
         router.push("/addProfile") 
 
     }
@@ -87,7 +87,7 @@ const DashboardWrapper = (props) => {
     
     checkProfile()   
   
-  }, [profiles])
+  }, [profiles, isSuccess])
 
   useEffect(() => { 
 
@@ -98,13 +98,12 @@ const DashboardWrapper = (props) => {
        
  
 
-  }, [isFocused, isSuccess])
+  }, [isFocused, profiles?.data.length === 0])
 
 
   return (
 
     <ProtectedRoute>
-      {console.log('yo profiles', profiles)}
 
       <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.lightWhite }}>
         <Stack.Screen
@@ -136,7 +135,7 @@ const DashboardWrapper = (props) => {
             headerTitle: "",
           }}
         />
-        {console.log('current user', currentUser)}
+
         <Sidebar isOpen={isOpen} setIsOpen={setIsOpen} />
         <SidebarProfile profile={profiles?.data[0]} setProfile={setProfile} setCurrentUser={setCurrentUser} isOpen={profileIsOpen} setIsOpen={setProfileIsOpen} />
 

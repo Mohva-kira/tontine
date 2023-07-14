@@ -1,4 +1,4 @@
-import { View, Text, SafeAreaView, ActivityIndicator, TouchableOpacity } from 'react-native'
+import { View, Text, SafeAreaView, ActivityIndicator, TouchableOpacity, ScrollView } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import Timeline from 'react-native-timeline-flatlist'
 import { useGetNotificationsQuery } from '../reducers/api/notificationApi'
@@ -12,6 +12,7 @@ import { useUpdateNotificationMutation } from '../reducers/api/notificationApi';
 import { useAddNotificationMutation } from '../reducers/api/notificationApi';
 import ToastManager, { Toast } from 'toastify-react-native'
 import { useRouter } from 'expo-router';
+
 
 const Notifications = () => {
   return (
@@ -33,7 +34,7 @@ const NotificationsWrapper = () => {
   const getData = async () => {
     try {
       const jsonValue = await AsyncStorage.getItem('@user')
-      console.log('getData', jsonValue)
+  
       if (jsonValue) {
         setCurrentUser(JSON.parse(jsonValue))
       }
@@ -62,6 +63,7 @@ const NotificationsWrapper = () => {
       if (!data?.data[i].attributes.lu) {
         result.push(
           {
+            id: data?.data[i]?.attributes.to.data?.id,
             time: new Date(data?.data[i]?.attributes.createdAt).toLocaleDateString('fr', options),
             title: `${data?.data[i]?.attributes.title} à la tontine " ${data?.data[i]?.attributes.tontine.data.attributes.name} " `,
             description: data?.data[i]?.attributes.description
@@ -69,8 +71,8 @@ const NotificationsWrapper = () => {
         )
       }
     }
-    console.log('result', result)
-    return result
+
+    return result.sort((a, b) => (a > b ? -1 : 1))
   }
 
   const sendData = async () => {
@@ -83,13 +85,13 @@ const NotificationsWrapper = () => {
     try {
       await updateNotif(updateData)
         .unwrap()
-        .then(data => { console.log('added', data) })
+        .then(data => {  Toast.success('!') })
         .catch(e => console.log('error', e))
 
 
       await addNotif(newNotif)
         .unwrap()
-        .then(data => { console.log('added', data); Toast.success('Notification envoyé!') })
+        .then(data => {  Toast.success('Notification envoyé!') })
         .catch(e => console.log('error', e))
 
 
@@ -110,12 +112,13 @@ const NotificationsWrapper = () => {
 
   }, [isFocused])
   return (
-    <SafeAreaView>
-      <View>
+    <SafeAreaView style={{ flex: 1 }}>
+      <ScrollView> 
+      <View  >
         <ToastManager />
 
 
-        {console.log('la data user', data)}
+
         {isLoading ? (
           <ActivityIndicator size="large" colors={COLORS.primary} />
         ) : isError ? (
@@ -128,26 +131,32 @@ const NotificationsWrapper = () => {
             </TouchableOpacity> */}
           </>
         ) : (
-          <View style={{ marginTop: SIZES.xLarge, }} >
-            <Timeline
-              data={formatedData}
-              circleSize={20}
-              circleColor='rgb(45,156,219)'
-              circleStyle={{ marginLeft: 5 }}
-              lineColor='rgb(45,156,219)'
-              timeContainerStyle={{ minWidth: 52, marginTop: -5, marginLeft: 5 }}
-              timeStyle={{ textAlign: 'center', backgroundColor: '#ff9797', color: 'white', padding: 5, borderRadius: 13 }}
-              descriptionStyle={{ color: 'gray' }}
-              options={{
-                style: { paddingTop: 5 }
-              }}
-              isUsingFlatlist={true}
-              innerCircle={'dot'}
-              onEventPress={() => data?.data[0]?.attributes.type === 'Demande' ? router.push(`/demande/${data?.data[0]?.attributes.from.data.id}`) : sendData()}
-            />
-          </View>
+          <>
+         
+        <View style={{ backgroundColor: 'white', padding: 20, height: 900}}> 
+      
+         <Timeline
+         data={formatedData}
+         circleSize={20}
+         circleColor='rgb(45,156,219)'
+         circleStyle={{ marginLeft: 5 }}
+         lineColor='rgb(45,156,219)'
+         timeContainerStyle={{ flex:1, minWidth: 152, marginTop: -5, marginLeft: 5 }}
+         timeStyle={{ textAlign: 'center', backgroundColor: '#ff9797', color: 'white', padding: 5, borderRadius: 13 }}
+         descriptionStyle={{ color: 'gray' }}
+         options={{
+           style: { paddingTop: 5 }
+         }}
+         isUsingFlatlist={true}
+         innerCircle={'dot'}
+         onEventPress={(e) => { console.log('e', e); data?.data[0]?.attributes.type === 'Demande' ? router.push(`/demande/${formatedData.find(item => item.id === e.id).id}`) : sendData()}}
+         
+       />
+       </View>
+        </>
         )}
       </View>
+      </ScrollView>
     </SafeAreaView>
   )
 }

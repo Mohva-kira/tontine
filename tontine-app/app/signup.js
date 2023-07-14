@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Text, View, ScrollView, TouchableOpacity } from "react-native";
+import { Text, View, ScrollView, TouchableOpacity, Dimensions } from "react-native";
 import { useRouter, Stack } from "expo-router";
 import { COLORS, icons, images, SIZES } from "../constants";
 import Background from "./Background";
@@ -14,9 +14,10 @@ import { Ionicons } from '@expo/vector-icons';
 
 
 const SignupSchema = Yup.object().shape({
-  number: Yup.number()
-    .min(8, 'Trop court')
-
+  number: Yup.string()
+    .min(8, 'Saisissez un numero de téléphone correcte')
+    .max(10, 'Saisissez un numero de téléphone correcte')
+    .matches(/^[0-9]+$/, 'Seulement les chiffres sont autorisé')
     .required('Saisissez votre numéro de téléphone'),
   password: Yup.string()
     .required('Mot de passe requis')
@@ -52,13 +53,13 @@ const SignupWrapped = () => {
   const [marginBt, setMarginBt] = useState(10)
   const [passwordVisible, setPasswordVisible] = useState(true)
   const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(true)
-
+  const { height, width } = Dimensions.get('window');
   const countries = ["Côte d'Ivoire", "Senegal", "Mali"]
   const sendData = async () => {
     const randomMail = `${username}@gmail.com`
-    console.log(username, password, phone, randomMail, pays, ind)
+
     try {
-      await register({ username, email: randomMail, password, phone_number: phone, pays, ind })
+      await register({ username, email: email, password, phone_number: phone, pays, ind, activated: false })
         .unwrap()
         .then((payload) => {
           console.log('fulfilled', payload)
@@ -67,7 +68,7 @@ const SignupWrapped = () => {
         },)
         .catch((error) => console.log('rejected', error))
 
-      console.log('done')
+
 
     } catch (error) {
       console.log(error)
@@ -76,7 +77,7 @@ const SignupWrapped = () => {
 
   const handleChangeText = (event, func) => {
     const { name, type, text } = event.nativeEvent;
-    console.log('le text', text)
+
     func(text)
     // handleChange('number')
 
@@ -107,7 +108,8 @@ const SignupWrapped = () => {
             <View
               style={{
                 alignItems: "center",
-                width: 460,
+                width: (width > height) ? height : width,
+                height: (height < width) ? width : height
               }}
             >
               <Text
@@ -125,12 +127,12 @@ const SignupWrapped = () => {
               <View
                 style={{
                   backgroundColor: COLORS.lightWhite,
-                  height: 700,
-                  width: 460,
+                  width: (width > height) ? height : width,
+                  height: (height < width) ? width : height,
                   borderTopLeftRadius: 100,
                   paddingTop: 50,
                   alignItems: "center",
-                  justifyContent: "center",
+
                   alignSelf: 'flex-start',
                   paddingBottom: marginBt
                 }}
@@ -140,7 +142,7 @@ const SignupWrapped = () => {
                   defaultValueByIndex={0}
                   data={countries}
                   onSelect={(selectedItem, index) => {
-                    console.log(selectedItem, index)
+
                     setPays(selectedItem)
 
                     if (selectedItem === "côte d'ivoire") {
@@ -163,42 +165,48 @@ const SignupWrapped = () => {
                   }}
                 />
 
-                <Field placeholder="Numero de télephone / Username" onFocus={() => setMarginBt(400)} onBlur={() => { setFieldTouched('number'); setMarginBt(0) }} onChange={e => { handleChangeText(e, setUsername) }} onChangeText={handleChange('number')} value={values.number} />
+                <Field placeholder="email " onFocus={() => setMarginBt(400)} onBlur={() => { setFieldTouched('email'); setMarginBt(0) }} onChange={e => { handleChangeText(e, setEmail) }} onChangeText={handleChange('email')} value={values.email} />
+                {touched.email && errors.email && (
+                  <Text style={{ color: 'red', width: '70%' }}> {errors.email} </Text>
+                )}
+
+
+                <Field placeholder="Numero de télephone " onFocus={() => setMarginBt(400)} onBlur={() => { setFieldTouched('number'); setMarginBt(0) }} onChange={e => { handleChangeText(e, setUsername) }} onChangeText={handleChange('number')} value={values.number} />
                 {touched.number && errors.number && (
                   <Text style={{ color: 'red', width: '70%' }}> {errors.number} </Text>
                 )}
-                <View style={{ width: '130%', alignItems: 'center', flexDirection: 'row', paddingLeft: 130 }}>
+                <View style={{ width: '130%', alignItems: 'center', flexDirection: 'row', paddingLeft: 120 }}>
 
                   <Field placeholder="Mot de passe"
                     onFocus={() => setMarginBt(400)}
                     onBlur={() => {
                       setFieldTouched('password');
                       setMarginBt(20)
-                    }} autoCapitalize={false}
+                    }}
                     onChange={e => { handleChangeText(e, setPassword) }}
                     onChangeText={handleChange('password')}
                     secureTextEntry={passwordVisible}
                     value={values.password} />
 
-                  <TouchableOpacity style={{ position: 'absolute', right: 150 }} onPress={() => setPasswordVisible(!passwordVisible)}>
+                  <TouchableOpacity style={{ position: 'absolute', right: 120 }} onPress={() => setPasswordVisible(!passwordVisible)}>
                     {passwordVisible ? <Ionicons name="eye" size={24} color="black" /> : <Ionicons name="eye-off" size={24} color="black" />}
                   </TouchableOpacity>
                 </View>
                 {touched.password && errors.password && (
                   <Text style={{ color: 'red', width: '70%' }}> {errors.password} </Text>
                 )}
-                <View style={{ width: '130%', alignItems: 'center', flexDirection: 'row', paddingLeft: 130 }}>
+                <View style={{ width: '130%', alignItems: 'center', flexDirection: 'row', paddingLeft: 120 }}>
 
                   <Field placeholder="Conifrmer mot de passe"
                     onFocus={() => setMarginBt(400)}
                     onBlur={() => { setFieldTouched('confirmPassword'); setMarginBt(20) }}
-                    autoCapitalize={false}
+
                     onChange={e => { handleChangeText(e, () => { }) }}
                     onChangeText={handleChange('confirmPassword')}
                     secureTextEntry={confirmPasswordVisible}
                     value={values.confirmPassword} />
 
-                  <TouchableOpacity style={{ position: 'absolute', right: 150 }} onPress={() => setConfirmPasswordVisible(!confirmPasswordVisible)}>
+                  <TouchableOpacity style={{ position: 'absolute', right: 120 }} onPress={() => setConfirmPasswordVisible(!confirmPasswordVisible)}>
                     {confirmPasswordVisible ? <Ionicons name="eye" size={24} color="black" /> : <Ionicons name="eye-off" size={24} color="black" />}
                   </TouchableOpacity>
                 </View>

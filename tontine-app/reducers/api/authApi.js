@@ -7,7 +7,7 @@ let user;
 const getData = async () => {
   try {
     const jsonValue = await AsyncStorage.getItem('@user')
-    console.log('getData', jsonValue)
+ 
     if (jsonValue) {
       user = JSON.parse(jsonValue)
     }
@@ -96,13 +96,13 @@ export const authSlice = createSlice({
     extraReducers: (builder) =>  {
         builder.addMatcher(authApi.endpoints.register.matchFulfilled, (state, action)=> {
 
-            console.log('youhou', action.payload)
+           
             
         })
 
         builder.addMatcher(authApi.endpoints.login.matchFulfilled, (state, action)=> {
           state.user = action.payload
-          console.log('youhou', action.payload)
+         
           
       })
     }

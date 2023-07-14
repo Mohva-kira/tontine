@@ -13,7 +13,7 @@ const ProtectedRoute = ({ children, component: Component, ...rest }) => {
   const getData = async () => {
     try {
       const jsonValue = await AsyncStorage.getItem('@user')
-      console.log('getData', jsonValue)
+     
       if (jsonValue) {
         setCurrentUser(jsonValue)
       }
@@ -27,7 +27,7 @@ const ProtectedRoute = ({ children, component: Component, ...rest }) => {
 
 
   function parseJwt (token) {
-    console.log('tadam', token)
+    
     var base64Url = token.split('.')[1];
     var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
     var jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
@@ -48,7 +48,7 @@ useEffect(() => {
         if (!user) {
           router.push('login');
         } else {
-            console.log('yoo',user.jwt)
+           
           // Décodez le jeton pour obtenir la date d'expiration
           const decodedToken = jwt_decode(user.jwt);
           const expirationTime = decodedToken.exp;

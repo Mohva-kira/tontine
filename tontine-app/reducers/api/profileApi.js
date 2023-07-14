@@ -2,25 +2,9 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createSlice } from "@reduxjs/toolkit";
 
-// let user;
-// const getData = async () => {
-//   try {
-//     const jsonValue = await AsyncStorage.getItem('@user')
-//     console.log('getData', jsonValue)
-//     if (jsonValue) {
-//       user = JSON.parse(jsonValue)
-//     }
-//     return jsonValue
-//   } catch (e) {
-//     // error reading value
 
-//     console.log('error', e)
-//   }
-// }
 
-// getData() 
 
-// console.log('le user', user)
 // Define a service using a base URL and expected endpoints
 export const profileApi = createApi({
   reducerPath: 'profileApi',
@@ -29,7 +13,7 @@ export const profileApi = createApi({
      prepareHeaders: async (headers) => {
       const user = JSON.parse (await AsyncStorage.getItem('@user'))
 
-        console.log('state user', user)
+    
       if (user ) {
           headers.set('Authorization', `Bearer ${user.jwt}`)
           headers.set('Content-Type', `application/json`)

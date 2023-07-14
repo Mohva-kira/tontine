@@ -69,8 +69,7 @@ const AddTontineWrapper = () => {
   changeDate = (date) => {
     setDate(date);
     let laDate = new Date(date);
-    console.log("la date", laDate);
-    console.log("people", people);
+
     if (periodicite === "Hebdomadaire") {
       let weeksToMonth = Number(people) * 7 / 30
 
@@ -93,7 +92,7 @@ const AddTontineWrapper = () => {
 
   getChecked = (value) => {
     // value = our checked value
-    console.log(value)
+  
     setPeriodicite(value)
   }
   
@@ -101,7 +100,7 @@ const AddTontineWrapper = () => {
   const getData = async () => {
     try {
       const jsonValue = await AsyncStorage.getItem('@user')
-      console.log('getData', jsonValue)
+
       if (jsonValue) {
         setCurrentUser(JSON.parse(jsonValue)) 
       }
@@ -123,7 +122,7 @@ const AddTontineWrapper = () => {
       counter += 1;
     }
     
-    console.log(result)
+
     setAccessCode(result)
    
 }
@@ -134,11 +133,11 @@ const AddTontineWrapper = () => {
     const data = {data: {name, cotisation, periodicite, nb_people: people, date_debut: date, date_fin: endDate, amount_collect: totalAmount, owner: currentUser?.user.id, location: 'Abidjan', status, access_code: accessCode, nextDueDate: date, logistic_fees: logisticFee} }
     storeData(data)
 
-    console.log('data to send',data)
+  
     try {
         await addTontine(data)
           .unwrap()
-          .then(data =>{ console.log('added', data);  Toast.success('Tontine créer avec succès!'); setTimeout(() => {  router.push("/invite");  }, 3000)  })
+          .then(data =>{   Toast.success('Tontine créer avec succès!'); setTimeout(() => {  router.push("/invite");  }, 3000)  })
           .catch(e => console.log('error', e))
 
           

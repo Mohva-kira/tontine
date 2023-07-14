@@ -10,7 +10,7 @@ export const handsApi = createApi({
     prepareHeaders: async (headers) => {
       const user = JSON.parse(await AsyncStorage.getItem('@user'))
 
-      console.log('state user', user)
+    
       if (user) {
         headers.set('Authorization', `Bearer ${user.jwt}`)
         headers.set('Content-Type', `application/json`)

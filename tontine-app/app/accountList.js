@@ -49,7 +49,7 @@ const AccountListWrapper = () => {
   const getData = async () => {
     try {
       const jsonValue = await AsyncStorage.getItem('@user')
-      console.log('getData', jsonValue)
+   
       if (jsonValue) {
         setCurrentUser(JSON.parse(jsonValue))
       }
@@ -57,7 +57,7 @@ const AccountListWrapper = () => {
     } catch (e) {
       // error reading value
 
-      console.log('error', e)
+     
     }
   }
   // const stateData = useSelector(state=> state.Tontines)
@@ -165,10 +165,7 @@ const AccountListWrapper = () => {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.lightWhite }}>
 
-      {console.log('my tontines', myTontines)}
-      {console.log('toutes tontines', tontines)}
-      {console.log('hands', hands)}
-      {console.log('payments', payments)}
+     
       <ScrollView showVerticalScrollIndicator={false}>
        <Stack.Screen
         options={{

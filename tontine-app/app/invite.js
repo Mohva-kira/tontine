@@ -33,11 +33,11 @@ const invite = () => {
         router.push('/dashboard')
       })
 
-      console.log('le resultat', result)
+ 
       if (result === Share.sharedAction) {
         if (result.activityType) {
           // shared with activity type of result.activityType
-          console.log('result', result)
+   
           router.push('/dashboard')
         } else {
           // shared
@@ -68,7 +68,7 @@ const invite = () => {
   const getData = async () => {
     try {
       const jsonValue = await AsyncStorage.getItem('@TontineAdded')
-      console.log('getData', jsonValue)
+
       if (jsonValue) {
         setCurrentTontine(JSON.parse(jsonValue))
       }
@@ -89,7 +89,7 @@ const invite = () => {
         if (data.length > 0) {
          
           const contact = data[0];
-          console.log('contact', contact);
+  
           
           let contactMade = []
 
@@ -111,7 +111,7 @@ const invite = () => {
   return (
     <ProtectedRoute>
       <SafeAreaView style={{ flex: 1 }}>
-        {console.log(currentTontine)}
+ 
         <Stack.Screen
           options={{
             headerStyle: { backgroundColor: COLORS.lightWhite },

@@ -14,6 +14,7 @@ const styles = StyleSheet.create({
     backgroundColor: transac?.attributes?.type === "retrait" ? "#90EE90" : "#FFF",
     ...SHADOWS.medium,
     shadowColor: COLORS.white,
+    height: 95
   }),
   logoContainer: {
     width: 50,
@@ -28,27 +29,25 @@ const styles = StyleSheet.create({
     height: "70%",
   },
   textContainer: {
-    flex: 1,
-    marginHorizontal: SIZES.medium,
-    flexDirection: "row",
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    alignContent: "space-between",
-    display:'flex'
+    flexDirection: 'row',
+
+    justifyContent: 'center',
+    alignItems : 'center',
+    width:'100%',
+    gap: 10
   },
   jobName: {
     fontSize: SIZES.medium,
     fontFamily: "DMBold",
     color: COLORS.primary,
-    width: 90
+  
   },
   tontineName: {
     fontSize: SIZES.small,
     fontFamily: "DMBold",
     color: COLORS.primary,
     paddingTop: 20,
-    width: 200
+   
 
   },
   bottomContainer: {
@@ -61,7 +60,8 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 0, 
     paddingTop: 50,
-    marginLeft : 20
+    marginLeft : 20,
+    marginBottom: 10
   },
   jobType: {
     fontSize: SIZES.small + 2,
@@ -69,6 +69,7 @@ const styles = StyleSheet.create({
     color: COLORS.gray,
     marginTop: 3,
     textTransform: "capitalize",
+ 
   },
   date: {
     fontSize: SIZES.small + 2,

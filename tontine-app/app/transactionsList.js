@@ -133,7 +133,7 @@ const TransactionsListWrapper = () => {
  const myTransactions = data?.data.filter(tran => tran.attributes.user.data.id === currentUser?.user.id)
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.lightWhite }}>
-      { console.log(myTransactions)}
+
       <Stack.Screen
         options={{
           headerStyle: { backgroundColor: COLORS.lightWhite },

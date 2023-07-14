@@ -12,7 +12,7 @@ import { Ionicons } from "@expo/vector-icons";
 import Tooltip from "react-native-walkthrough-tooltip";
 
 const TontineCard = ({ tontine, handleCardPress }) => {
-  console.log(tontine);
+
   const [isPeriodVisible, setIsPeriodVisible] = useState(false);
   const [isPeopleVisible, setIsPeopleVisible] = useState(false);
   const [isAmountVisible, setIsAmountVisible] = useState(false);
@@ -97,7 +97,7 @@ const TontineCard = ({ tontine, handleCardPress }) => {
 
         <Tooltip
           isVisible={isFeeVisible}
-          content={<Text>Pourcentage pour la logistique</Text>}
+          content={<Text> {tontine.attributes.logistic_fees}% de frais pour la logistique + 5% de frais d'administrtion</Text>}
           placement="top"
           onClose={() => setIsFeeVisible(!isFeeVisible)}
         >
@@ -107,7 +107,7 @@ const TontineCard = ({ tontine, handleCardPress }) => {
           >
             <Text style={styles.detailText}>
               <Feather name="percent" size={24} color="black" />{" "}
-              {tontine.attributes.logistic_fees}
+              {tontine.attributes.logistic_fees + 5} 
             </Text>
           </TouchableOpacity>
         </Tooltip>

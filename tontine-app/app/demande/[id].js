@@ -52,7 +52,7 @@ const DemandeWrapper = () => {
     const getData = async () => {
         try {
             const jsonValue = await AsyncStorage.getItem('@user')
-            console.log('getData', jsonValue)
+           
             if (jsonValue) {
                 setCurrentUser(JSON.parse(jsonValue))
             }
@@ -92,20 +92,19 @@ const DemandeWrapper = () => {
     const sendData = async () => {
 
         let lu = true
-        const updateData = { data: { id: data?.data[0].id, lu } }
-        const newNotif = { data: { title: 'Demande accpeté', lu: false, from: user?.user.id || currentUser?.user.id, to: notifData?.data[0].attributes.from.data.id, tontine: notifData?.data[0].attributes.tontine.data.id, description: 'Votre demande de participation a été accepter' } }
-
-        console.log('data to send', updateData)
+        const updateData = { data: { id: data?.data[0]?.id, lu } }
+        const newNotif = { data: { title: 'Demande accpeté', lu: false, from: user?.user?.id || currentUser?.user.id, to: notifData?.data[0]?.attributes.from.data?.id, tontine: notifData?.data[0]?.attributes.tontine.data?.id, description: 'Votre demande de participation a été accepter' } }
+            console.log('la data', newNotif)
         try {
             await updateNotif(updateData)
                 .unwrap()
-                .then(data => { console.log('added', data) })
+                .then(data => { Toast.success('Notification mise a jour!')  })
                 .catch(e => console.log('error', e))
 
 
             await addNotif(newNotif)
                 .unwrap()
-                .then(data => { console.log('added', data); Toast.success('Notification envoyé!') })
+                .then(data => { Toast.success('Notification envoyé!') })
                 .catch(e => console.log('error', e))
 
 
@@ -127,6 +126,8 @@ const DemandeWrapper = () => {
 
     return (
         <View>
+      {console.log('id', params.id)}
+      {console.log('notif', notifData)}
              <ToastManager />
       <Stack.Screen
         options={{
@@ -151,9 +152,9 @@ const DemandeWrapper = () => {
           headerTitle: "Demande de participation",
         }}
       />
-            {console.log('ton', notifData)}
+   
             <WelcomeCard profile={data?.data[0]} />
-
+         
             <JobTabs
                 tabs={tabs}
                 activeTab={activeTab}

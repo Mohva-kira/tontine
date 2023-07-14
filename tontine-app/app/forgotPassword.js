@@ -72,7 +72,7 @@ const ForgotPasswordWrapper = () => {
     const getData = async () => {
         try {
             const jsonValue = await AsyncStorage.getItem('@user')
-            console.log('getData', jsonValue)
+      
             if (jsonValue) {
                 setCurrentUser(JSON.parse(jsonValue))
             }
@@ -88,16 +88,16 @@ const ForgotPasswordWrapper = () => {
 
     const sendData = async () => {
 
-        const data = { email: phone + '@gmail.com' }
+        const data = { email: phone  }
         storeData(data)
 
-        console.log('data to send', data)
+     
         try {
             await forgetPassword(data)
                 .unwrap()
                 .then(data => {
-                    console.log('added', data);
-                    const message = `Vérifier vos SMS  pour modifier votre mot de passe.`;
+        
+                    const message = `Vérifier vos email  pour modifier votre mot de passe.`;
                     Toast.success(message)
                 })
                 .catch(e => console.log('error', e))
@@ -153,7 +153,7 @@ const ForgotPasswordWrapper = () => {
                             Mot de passe oublié
                         </Text>
                         <Field
-                            placeholder="Numero de telephone"
+                            placeholder="Votre email"
                             onChangeText={(num) => setPhone(num)}
                         />
 

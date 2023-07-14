@@ -80,7 +80,7 @@ const PopularTontines = ({currentUser}) => {
 
   return (
     <View style={styles.container}>
-      {console.log("payment data", data)}
+      
       <View style={styles.header}>
         <Text style={styles.headerTitle}>Mon compte</Text>
         <TouchableOpacity onPress={() => router.push("/accountList")}>

@@ -24,7 +24,7 @@ const Home = () => {
   const getData = async () => {
     try {
       const jsonValue = await AsyncStorage.getItem('@user')
-      console.log('getData', jsonValue)
+
       
         const user = JSON.parse(jsonValue) 
         const userToken = jwtDecode(user.jwt)
